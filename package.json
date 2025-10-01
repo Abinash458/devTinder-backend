@@ -1,0 +1,27 @@
+{
+  "name": "devtinder-backend",
+  "version": "1.0.0",
+  "description": "Tinder for developers",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abinash458/devTinder-backend.git"
+  },
+  "keywords": [
+    "nodejs",
+    "javascript"
+  ],
+  "author": "Abinash Mohapatra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abinash458/devTinder-backend/issues"
+  },
+  "homepage": "https://github.com/Abinash458/devTinder-backend#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
