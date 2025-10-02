@@ -15,6 +15,41 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+app.get("/userById", async (req, res) => {
+  try {
+    const user = await User.findById("68de6242730b958a35cd9b3b");
+    if (!user) {
+      res.send("User not found!");
+    } else {
+      res.send(user);
+    }
+  } catch (error) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+app.get("/user", async (req, res) => {
+  try {
+    const user = await User.findOne({ emailId: "abinash@gmail.com" });
+    if (!user) {
+      res.send("User not found!");
+    } else {
+      res.send(user);
+    }
+  } catch (error) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.send(users);
+  } catch (error) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("Database connection established!");
