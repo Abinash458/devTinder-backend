@@ -3,24 +3,15 @@ const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const app = express();
 
-app.get("/admin/getAllUser", adminAuth, (req, res) => {
-  res.send("All user data sent!");
+app.get("/getUserData", userAuth, (req, res) => {
+  throw new Error("This is an error");
+  res.send("User data sent!");
 });
 
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("Deleted user");
-});
-
-app.get("/user/login", (req, res) => {
-  res.send("Get Login Page");
-});
-
-app.get("/user/getUser", userAuth, (req, res) => {
-  res.send("Single user data sent!");
-});
-
-app.get("/user/updateUser", userAuth, (req, res) => {
-  res.send("Update user");
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong!");
+  }
 });
 
 app.listen(7777, () => {
