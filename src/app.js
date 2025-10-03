@@ -1,13 +1,27 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
+
 const connectDB = require("./config/database");
 const User = require("./models/user");
+const { validateSignUpData } = require("./utils/validation");
 const app = express();
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
   try {
+    // Validation of data
+    validateSignUpData(req);
+    const { firstName, lastName, emailId, password } = req.body;
+    // Encrypt the password
+    const hashPassword = await bcrypt.hash(password, 10);
+    // Creating a new instance of the User model
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      password: hashPassword,
+    });
     await user.save();
     res.send("User saved successfully!");
   } catch (error) {
@@ -82,5 +96,5 @@ connectDB()
     });
   })
   .catch((err) => {
-    console.error("Database cannot be connected!");
+    console.error("Database cannot be connected! " + err.message);
   });
