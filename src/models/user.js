@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,17 +20,19 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid email address: " + value);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
       minLength: 8,
       validate(value) {
-        const re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        if (!re.test(value)) {
-          throw new Error(
-            "Password should contains atleast 8 letters, 1 symbol, upper and lower case and a number"
-          );
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Enter a strong password: " + value);
         }
       },
     },
@@ -49,6 +52,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://smsdelhibmw.co.in/wp-content/uploads/2022/02/User-Profile-PNG.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Invalid photo url: " + value);
+        }
+      },
     },
     about: {
       type: String,
