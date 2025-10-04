@@ -5,10 +5,11 @@ const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
 const connectDB = require("./config/database");
-const User = require("./models/user");
 const { validateSignUpData } = require("./utils/validation");
-const app = express();
+const { userAuth } = require("./middlewares/auth");
+const User = require("./models/user");
 
+const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
@@ -61,83 +62,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const { token } = req.cookies;
-    if (!token) {
-      throw new Error("Invalid Token");
-    }
-
-    const decodedData = await jwt.verify(token, "Dev@Tinder#123");
-    const { _id } = decodedData;
-
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new Error("User not found!");
-    }
+    const user = req.user;
 
     res.send(user);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
-  }
-});
-
-app.get("/user", async (req, res) => {
-  try {
-    const user = await User.findOne({ emailId: "abinash@gmail.com" });
-    if (!user) {
-      res.send("User not found!");
-    } else {
-      res.send(user);
-    }
-  } catch (error) {
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (error) {
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.delete("/user", async (req, res) => {
-  const userId = req.body.userId;
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    res.send("User deleted successfully!");
-  } catch (error) {
-    res.status(400).send("Something went wrong");
-  }
-});
-
-app.patch("/user/:userId", async (req, res) => {
-  const userId = req.params?.userId;
-  const data = req.body;
-
-  try {
-    const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
-
-    const isUpdateAllowed = Object.keys(data).every((k) =>
-      ALLOWED_UPDATES.includes(k)
-    );
-
-    if (!isUpdateAllowed) {
-      throw new Error("Update not allowed!");
-    }
-    if (data?.skills.length > 10) {
-      throw new Error("Skills can not be more than 10");
-    }
-    await User.findByIdAndUpdate({ _id: userId }, data, {
-      returnDocument: "after",
-      runValidators: true,
-    });
-    res.send("user updated successfully!");
-  } catch (error) {
-    res.status(400).send("UPDATE FAILED: " + error.message);
   }
 });
 
