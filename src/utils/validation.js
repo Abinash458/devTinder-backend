@@ -12,7 +12,7 @@ const validateSignUpData = (req) => {
   }
 };
 
-const validateProfileEditData = (req) => {
+const validateProfileEditField = (req) => {
   const allowedEditFields = [
     "firstName",
     "lastName",
@@ -30,7 +30,26 @@ const validateProfileEditData = (req) => {
   return isEditAllowed;
 };
 
+const validateProfileEditData = (req) => {
+  const { age, gender, photoUrl, about, skills } = req?.body;
+
+  const allowedGender = ["male", "female", "others"];
+
+  if (age && age < 18) {
+    throw new Error("Age is not valid");
+  } else if (gender && !validator.isIn(gender, allowedGender)) {
+    throw new Error("Gender is not valid");
+  } else if (photoUrl && !validator.isURL(photoUrl)) {
+    throw new Error("PhotoUrl is not valid");
+  } else if (about && !validator.isLength(about, { min: 0, max: 500 })) {
+    throw new Error("About should contain maximum 500 letters");
+  } else if (skills && skills.length > 10) {
+    throw new Error("Maxmimum 10 skills allowed");
+  }
+};
+
 module.exports = {
   validateSignUpData,
+  validateProfileEditField,
   validateProfileEditData,
 };
