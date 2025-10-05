@@ -8,15 +8,14 @@ const {
   validateProfileEditField,
   validateProfileEditData,
 } = require("../utils/validation");
-const User = require("../models/user");
 
 router.get("/profile/view", userAuth, async (req, res) => {
   try {
     const user = req.user;
 
-    res.send(user);
+    res.json({ data: user });
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -36,7 +35,7 @@ router.patch("/profile/edit", userAuth, async (req, res) => {
       data: loggedInUser,
     });
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -60,7 +59,7 @@ router.patch("/profile/password", userAuth, async (req, res) => {
       })
       .send("Password update successfully");
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 

@@ -20,7 +20,7 @@ router.post("/signup", async (req, res) => {
     await user.save();
     res.send("User saved successfully!");
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
       throw new Error("Invalid credentials");
     }
   } catch (error) {
-    res.status(400).send("ERROR: " + error.message);
+    res.status(400).json({ message: error.message });
   }
 });
 
