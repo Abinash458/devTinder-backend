@@ -88,4 +88,13 @@ router.post("/payment/webhook", async (req, res) => {
   }
 });
 
+router.post("/premium/verify", userAuth, async (req, res) => {
+  const user = req.user.toJSON();
+  if (user.isPremium) {
+    return res.json({ isPremium: true });
+  } else {
+    return res.json({ isPremium: false });
+  }
+});
+
 module.exports = router;
